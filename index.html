@@ -3,24 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Data Visualization</title>
+    <title>Film Database</title>
     <link rel="stylesheet" href="static/styles.css">
+    <script src="static/script.js" defer></script>
 </head>
 <body>
-    <h1>User Information</h1>
-    
-    <!-- Table to display data -->
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Age</th>
-                <th>City</th>
-            </tr>
-        </thead>
-        <tbody id="data-table"></tbody>
-    </table>
+    <div class="container">
+        <h1>Film Database</h1>
 
-    <script src="static/script.js"></script>
+        <!-- Search and Sort Controls -->
+        <div class="controls">
+            <div>
+                <input type="text" id="search" placeholder="Search by title">
+                <button id="search-button" onclick="searchFilms()">Search</button>
+            </div>
+            <div>
+                <select id="sort" onchange="sortFilms()">
+                    <option value="year">Sort by Year</option>
+                    <option value="revenue">Sort by Revenue</option>
+                </select>
+                <select id="order" onchange="sortFilms()">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Film Table -->
+        <table id="film-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Directors</th>
+                    <th>Release Year</th>
+                    <th>Revenue ($)</th>
+                    <th>Country</th>
+                </tr>
+            </thead>
+            <tbody id="film-table-body">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
