@@ -1,3 +1,4 @@
+// Sample data stored in JavaScript
 const data = [
     { "name": "Alice", "age": 25, "city": "New York" },
     { "name": "Bob", "age": 30, "city": "Los Angeles" },
