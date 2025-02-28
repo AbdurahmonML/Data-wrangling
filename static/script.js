@@ -1,37 +1,22 @@
-async function fetchFilms() {
-    const searchTerm = document.getElementById('search').value;
-    const sortBy = document.getElementById('sort').value;
-    const order = document.getElementById('order').value;
-
-    const response = await fetch(`/api/films?search=${searchTerm}&sort=${sortBy}&order=${order}`);
-    const films = await response.json();
-    renderFilms(films);
-}
-
-function renderFilms(filmsArray) {
-    const tbody = document.querySelector("#film-table tbody");
-    tbody.innerHTML = "";
-
-    filmsArray.forEach(film => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${film.title}</td>
-            <td>${film.year}</td>
-            <td>${film.revenue}</td>
-            <td>${film.country}</td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-function searchFilms() {
-    fetchFilms();
-}
-
-function sortFilms() {
-    fetchFilms();
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    fetchFilms();
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("static/films_data.json")
+        .then(response => response.json())
+        .then(films => {
+            console.log(films);  // This will print the JSON data to the browser's console
+            const tableBody = document.getElementById("film-table-body");
+            tableBody.innerHTML = "";
+            films.forEach(film => {
+                const row = `<tr>
+                    <td>${film.title}</td>
+                    <td>${film.directors}</td>
+                    <td>${film.year}</td>
+                    <td>${film.revenue}</td>
+                    <td>${film.country}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        })
+        .catch(error => {
+            console.error("Error loading film data:", error);  // Logs any error if the file fails to load
+        });
 });
