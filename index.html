@@ -15,14 +15,14 @@
         <div class="controls">
             <div>
                 <input type="text" id="search" placeholder="Search by title">
-                <button id="search-button" onclick="searchFilms()">Search</button>
+                <button id="search-button">Search</button>
             </div>
             <div>
-                <select id="sort" onchange="sortFilms()">
+                <select id="sort">
                     <option value="year">Sort by Year</option>
                     <option value="revenue">Sort by Revenue</option>
                 </select>
-                <select id="order" onchange="sortFilms()">
+                <select id="order">
                     <option value="asc">Ascending</option>
                     <option value="desc">Descending</option>
                 </select>
@@ -41,31 +41,9 @@
                 </tr>
             </thead>
             <tbody id="film-table-body">
-                <!-- Data will be loaded from films_data.json -->
+                <!-- Data will be loaded dynamically -->
             </tbody>
         </table>
     </div>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch("{{ url_for('static', filename='films_data.json') }}")
-                .then(response => response.json())
-                .then(films => {
-                    const tableBody = document.getElementById("film-table-body");
-                    tableBody.innerHTML = "";
-                    films.forEach(film => {
-                        const row = `<tr>
-                            <td>${film.title}</td>
-                            <td>${film.directors}</td>
-                            <td>${film.year}</td>
-                            <td>${film.revenue}</td>
-                            <td>${film.country}</td>
-                        </tr>`;
-                        tableBody.innerHTML += row;
-                    });
-                })
-                .catch(error => console.error("Error loading film data:", error));
-        });
-    </script>
 </body>
 </html>
