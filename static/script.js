@@ -1,6 +1,6 @@
 // Sample data for films (used if API is unavailable)
 const sampleFilms = [
-    { "title": "Titanic", "directors": "James Cameron", "year": 1997, "revenue": 2257844554, "country": "United States" },
+    { "title": "Titanic", "directors": "James Cameron", "year": 1997, "revenue": 2257844554, "country": "United States" }
    
 ];
 
