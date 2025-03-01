@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Film Database</title>
-    <link rel="stylesheet" href="static/styles.css">
-    <script src="static/script.js" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body>
     <div class="container">
@@ -41,7 +41,7 @@
                 </tr>
             </thead>
             <tbody id="film-table-body">
-                <!-- Data will be inserted here -->
+                <!-- Data will be loaded from films_data.json -->
             </tbody>
         </table>
     </div>
