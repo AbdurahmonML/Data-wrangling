@@ -55,3 +55,4 @@ function sortFilms() {
 document.addEventListener("DOMContentLoaded", function () {
     renderFilms(films);
 });
+ 
