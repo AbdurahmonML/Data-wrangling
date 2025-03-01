@@ -3,68 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Film Database</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <title>Film List</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; cursor: pointer; }
+        input, select { margin: 10px 5px; padding: 5px; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Film Database</h1>
-
-        <!-- Search and Sort Controls -->
-        <div class="controls">
-            <div>
-                <input type="text" id="search" placeholder="Search by title">
-                <button id="search-button" onclick="searchFilms()">Search</button>
-            </div>
-            <div>
-                <select id="sort" onchange="sortFilms()">
-                    <option value="year">Sort by Year</option>
-                    <option value="revenue">Sort by Revenue</option>
-                </select>
-                <select id="order" onchange="sortFilms()">
-                    <option value="asc">Ascending</option>
-                    <option value="desc">Descending</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Film Table -->
-        <table id="film-table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Directors</th>
-                    <th>Release Year</th>
-                    <th>Revenue ($)</th>
-                    <th>Country</th>
-                </tr>
-            </thead>
-            <tbody id="film-table-body">
-                <!-- Data will be loaded from films_data.json -->
-            </tbody>
-        </table>
-    </div>
+    <h2>Film List</h2>
+    <input type="text" id="search" placeholder="Search by title" oninput="searchFilms()">
+    <select id="sort" onchange="sortFilms()">
+        <option value="title">Title</option>
+        <option value="year">Year</option>
+        <option value="revenue">Revenue</option>
+    </select>
+    <select id="order" onchange="sortFilms()">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+    </select>
     
+    <table id="film-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Directors</th>
+                <th>Year</th>
+                <th>Revenue</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
     <script>
+        const films = [
+            { "title": "Titanic", "directors": "James Cameron", "year": 1997, "revenue": 2257844554, "country": "United States" },
+            { "title": "Avatar", "directors": "James Cameron", "year": 2009, "revenue": 2923683000, "country": "United States" },
+            { "title": "The Godfather", "directors": "Francis Ford Coppola", "year": 1972, "revenue": 287000000, "country": "United States" },
+            { "title": "Inception", "directors": "Christopher Nolan", "year": 2010, "revenue": 836848102, "country": "United States" },
+            { "title": "Interstellar", "directors": "Christopher Nolan", "year": 2014, "revenue": 773000000, "country": "United States" },
+            { "title": "Parasite", "directors": "Bong Joon-ho", "year": 2019, "revenue": 263700000, "country": "South Korea" }
+        ];
+
+        function renderFilms(filmsArray) {
+            const tbody = document.querySelector("#film-table tbody");
+            tbody.innerHTML = "";
+            filmsArray.forEach(film => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${film.title}</td>
+                    <td>${film.directors}</td>
+                    <td>${film.year}</td>
+                    <td>${film.revenue.toLocaleString()}</td>
+                    <td>${film.country}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function searchFilms() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredFilms = films.filter(film =>
+                film.title.toLowerCase().includes(searchTerm)
+            );
+            renderFilms(filteredFilms);
+        }
+
+        function sortFilms() {
+            const sortBy = document.getElementById('sort').value;
+            const order = document.getElementById('order').value;
+            let sortedFilms = [...films].sort((a, b) => {
+                if (order === "asc") {
+                    return a[sortBy] > b[sortBy] ? 1 : -1;
+                } else {
+                    return a[sortBy] < b[sortBy] ? 1 : -1;
+                }
+            });
+            renderFilms(sortedFilms);
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
-            fetch("{{ url_for('static', filename='films_data.json') }}")
-                .then(response => response.json())
-                .then(films => {
-                    const tableBody = document.getElementById("film-table-body");
-                    tableBody.innerHTML = "";
-                    films.forEach(film => {
-                        const row = `<tr>
-                            <td>${film.title}</td>
-                            <td>${film.directors}</td>
-                            <td>${film.year}</td>
-                            <td>${film.revenue}</td>
-                            <td>${film.country}</td>
-                        </tr>`;
-                        tableBody.innerHTML += row;
-                    });
-                })
-                .catch(error => console.error("Error loading film data:", error));
+            renderFilms(films);
         });
     </script>
 </body>
