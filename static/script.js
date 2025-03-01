@@ -1,10 +1,7 @@
 // Sample data for films (used if API is unavailable)
 const sampleFilms = [
     { "title": "Titanic", "directors": "James Cameron", "year": 1997, "revenue": 2257844554, "country": "United States" },
-    { "title": "Avatar", "directors": "James Cameron", "year": 2009, "revenue": 2923683000, "country": "United States" },
-    { "title": "Inception", "directors": "Christopher Nolan", "year": 2010, "revenue": 836800000, "country": "United States" },
-    { "title": "Interstellar", "directors": "Christopher Nolan", "year": 2014, "revenue": 677471339, "country": "United States" },
-    { "title": "Parasite", "directors": "Bong Joon-ho", "year": 2019, "revenue": 266086719, "country": "South Korea" }
+   
 ];
 
 // Function to fetch films from the backend API with search and sort parameters
