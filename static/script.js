@@ -1,40 +1,56 @@
-// Function to fetch user data and render them
-document.addEventListener("DOMContentLoaded", function () {
-    async function fetchUsers() {
-        try {
-            const response = await fetch("static/users_data.json");
-            const users = await response.json();
-            renderUsers(users);
-        } catch (error) {
-            console.error("Error loading user data:", error);
-        }
+// Sample data for films (used if API is unavailable)
+const sampleFilms = [
+    { "title": "Titanic", "directors": "James Cameron", "year": 1997, "revenue": 2257844554, "country": "United States" },
+    { "title": "Avatar", "directors": "James Cameron", "year": 2009, "revenue": 2923683000, "country": "United States" },
+    { "title": "Inception", "directors": "Christopher Nolan", "year": 2010, "revenue": 836800000, "country": "United States" },
+    { "title": "Interstellar", "directors": "Christopher Nolan", "year": 2014, "revenue": 677471339, "country": "United States" },
+    { "title": "Parasite", "directors": "Bong Joon-ho", "year": 2019, "revenue": 266086719, "country": "South Korea" }
+];
+
+// Function to fetch films from the backend API with search and sort parameters
+async function fetchFilms() {
+    const searchTerm = document.getElementById('search').value;
+    const sortBy = document.getElementById('sort').value;
+    const order = document.getElementById('order').value;
+
+    try {
+        const response = await fetch(`/api/films?search=${searchTerm}&sort=${sortBy}&order=${order}`);
+        if (!response.ok) throw new Error("Failed to fetch films");
+        const films = await response.json();
+        renderFilms(films);
+    } catch (error) {
+        console.error("Error loading film data:", error);
+        renderFilms(sampleFilms); // Use sample data if API fails
     }
+}
 
-    // Sample data stored in JavaScript
-    const data = [
-        { "name": "Alice", "age": 25, "city": "New York" },
-        { "name": "Bob", "age": 30, "city": "Los Angeles" },
-        { "name": "Charlie", "age": 22, "city": "Chicago" }
-    ];
+// Function to render films in the table
+function renderFilms(filmsArray) {
+    const tbody = document.getElementById("film-table-body");
+    tbody.innerHTML = ""; // Clear existing rows
 
-    // Function to render user data in the table
-    function renderUsers(usersArray) {
-        let tableBody = document.getElementById("data-table");
-        tableBody.innerHTML = ""; // Clear previous content
+    filmsArray.forEach(film => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${film.title}</td>
+            <td>${film.directors}</td>
+            <td>${film.year}</td>
+            <td>${film.revenue.toLocaleString()}</td>
+            <td>${film.country}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
 
-        usersArray.forEach(user => {
-            let row = `<tr>
-                <td>${user.name}</td>
-                <td>${user.age}</td>
-                <td>${user.city}</td>
-            </tr>`;
-            tableBody.innerHTML += row;
-        });
-    }
+// Function to handle the search action
+function searchFilms() {
+    fetchFilms();
+}
 
-    // Render sample data initially
-    renderUsers(data);
+// Function to handle sorting change
+function sortFilms() {
+    fetchFilms();
+}
 
-    // Fetch and render data from JSON file
-    fetchUsers();
-});
+// Initial render
+document.addEventListener("DOMContentLoaded", fetchFilms);
