@@ -13,7 +13,7 @@ async function fetchFilms() {
     const sortBy = document.getElementById('sort').value;
     const order = document.getElementById('order').value;
 
-    try {
+    try { 
         const response = await fetch(`/api/films?search=${searchTerm}&sort=${sortBy}&order=${order}`);
         if (!response.ok) throw new Error("Failed to fetch films");
         const films = await response.json();
