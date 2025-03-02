@@ -3,78 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Data Visualization</title>
-    <link rel="stylesheet" href="static/styles.css">
+    <title>Film Database</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body>
-    <h1>User Information</h1>
-    
-    <!-- Table to display data -->
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Age</th>
-                <th>City</th>
-            </tr>
-        </thead>
-        <tbody id="data-table"></tbody>
-    </table>
+    <div class="container">
+        <h1>Film Database</h1>
 
-    <script src="static/script.js"></script>
+        <!-- Search and Sort Controls -->
+        <div class="controls">
+            <div>
+                <input type="text" id="search" placeholder="Search by title">
+                <button id="search-button">Search</button>
+            </div>
+            <div>
+                <select id="sort">
+                    <option value="year">Sort by Year</option>
+                    <option value="revenue">Sort by Revenue</option>
+                </select>
+                <select id="order">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Film Table -->
+        <table id="film-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Directors</th>
+                    <th>Release Year</th>
+                    <th>Revenue ($)</th>
+                    <th>Country</th>
+                </tr>
+            </thead>
+            <tbody id="film-table-body">
+                <!-- Data will be loaded dynamically -->
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
-
-please fix js file:
-
-// Function to fetch films from the JSON file and render them
-async function fetchFilms() {
-    try {
-        const response = await fetch("static/films_data.json");
-        const films = await response.json();
-        const films = [
-        { "title": "Titanic", "directors": "James Cameron", "year": 1997, "revenue": 2257844554, "country": "United States" },
-        { "title": "Avatar", "directors": "James Cameron", "year": 2009, "revenue": 2923683000, "country": "United States" }
-    ];
-        renderFilms(films);
-    } catch (error) {
-        console.error("Error loading film data:", error);
-    }
-}
-// Sample data stored in JavaScript
-const data = [
-    { "name": "Alice", "age": 25, "city": "New York" },
-    { "name": "Bob", "age": 30, "city": "Los Angeles" },
-    { "name": "Charlie", "age": 22, "city": "Chicago" }
-];
-
-// Function to render films in the table
-function renderFilms(filmsArray) {
-    const tbody = document.querySelector("#film-table tbody");
-    tbody.innerHTML = ""; // Clear existing rows
-
-    filmsArray.forEach(film => {
-        const row = document.createElement("tr");
-        row.innerHTML = 
-            <td>${film.title}</td>
-            <td>${film.directors}</td>
-            <td>${film.year}</td>
-            <td>${film.revenue}</td>
-            <td>${film.country}</td>
-        ;
-        tbody.appendChild(row);
-document.addEventListener("DOMContentLoaded", function () {
-    let tableBody = document.getElementById("data-table");
-    data.forEach(user => {
-        let row = <tr>
-            <td>${user.name}</td>
-            <td>${user.age}</td>
-            <td>${user.city}</td>
-        </tr>;
-        tableBody.innerHTML += row;
-    });
-}
-
-// Initial fetch and render
-document.addEventListener("DOMContentLoaded", fetchFilms);
-});
