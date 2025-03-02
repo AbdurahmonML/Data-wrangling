@@ -1,32 +1,16 @@
-// Sample data for films (used if API is unavailable)
-const sampleFilms = [
+// Hardcoded film data
+const films = [
     { "title": "Titanic", "directors": "James Cameron", "year": 1997, "revenue": 2257844554, "country": "United States" },
     { "title": "Avatar", "directors": "James Cameron", "year": 2009, "revenue": 2923683000, "country": "United States" },
-    { "title": "Inception", "directors": "Christopher Nolan", "year": 2010, "revenue": 836800000, "country": "United States" },
-    { "title": "Interstellar", "directors": "Christopher Nolan", "year": 2014, "revenue": 677471339, "country": "United States" },
-    { "title": "Parasite", "directors": "Bong Joon-ho", "year": 2019, "revenue": 266086719, "country": "South Korea" }
+    { "title": "The Godfather", "directors": "Francis Ford Coppola", "year": 1972, "revenue": 287000000, "country": "United States" },
+    { "title": "Inception", "directors": "Christopher Nolan", "year": 2010, "revenue": 836848102, "country": "United States" },
+    { "title": "Interstellar", "directors": "Christopher Nolan", "year": 2014, "revenue": 773000000, "country": "United States" },
+    { "title": "Parasite", "directors": "Bong Joon-ho", "year": 2019, "revenue": 263700000, "country": "South Korea" }
 ];
-
-// Function to fetch films from the backend API with search and sort parameters
-async function fetchFilms() {
-    const searchTerm = document.getElementById('search').value;
-    const sortBy = document.getElementById('sort').value;
-    const order = document.getElementById('order').value;
-
-    try {
-        const response = await fetch(`/api/films?search=${searchTerm}&sort=${sortBy}&order=${order}`);
-        if (!response.ok) throw new Error("Failed to fetch films");
-        const films = await response.json();
-        renderFilms(films);
-    } catch (error) {
-        console.error("Error loading film data:", error);
-        renderFilms(sampleFilms); // Use sample data if API fails
-    }
-}
 
 // Function to render films in the table
 function renderFilms(filmsArray) {
-    const tbody = document.getElementById("film-table-body");
+    const tbody = document.querySelector("#film-table tbody");
     tbody.innerHTML = ""; // Clear existing rows
 
     filmsArray.forEach(film => {
@@ -42,15 +26,32 @@ function renderFilms(filmsArray) {
     });
 }
 
-// Function to handle the search action
+// Function to filter films based on search input
 function searchFilms() {
-    fetchFilms();
+    const searchTerm = document.getElementById('search').value.toLowerCase();
+    const filteredFilms = films.filter(film =>
+        film.title.toLowerCase().includes(searchTerm)
+    );
+    renderFilms(filteredFilms);
 }
 
-// Function to handle sorting change
+// Function to sort films
 function sortFilms() {
-    fetchFilms();
+    const sortBy = document.getElementById('sort').value;
+    const order = document.getElementById('order').value;
+
+    let sortedFilms = [...films].sort((a, b) => {
+        if (order === "asc") {
+            return a[sortBy] > b[sortBy] ? 1 : -1;
+        } else {
+            return a[sortBy] < b[sortBy] ? 1 : -1;
+        }
+    });
+
+    renderFilms(sortedFilms);
 }
 
-// Initial render
-document.addEventListener("DOMContentLoaded", fetchFilms);
+// Initial render when page loads
+document.addEventListener("DOMContentLoaded", function () {
+    renderFilms(films);
+});
