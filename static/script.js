@@ -54,4 +54,8 @@ function sortFilms() {
 // Initial render when page loads
 document.addEventListener("DOMContentLoaded", function () {
     renderFilms(films);
+
+    document.getElementById("search-button").addEventListener("click", searchFilms);
+    document.getElementById("sort").addEventListener("change", sortFilms);
+    document.getElementById("order").addEventListener("change", sortFilms);
 });
