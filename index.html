@@ -33,15 +33,15 @@
 <body>
 
     <h2>Film List</h2>
-    <input type="text" id="search" placeholder="Search for a film..." onkeyup="filterFilms()">
+    <input type="text" id="search" placeholder="Search for a film..." onkeyup="updateTable()">
     <table>
         <thead>
             <tr>
-                <th onclick="sortFilms('title')">Title</th>
-                <th onclick="sortFilms('directors')">Director</th>
-                <th onclick="sortFilms('year')">Year</th>
-                <th onclick="sortFilms('revenue')">Revenue</th>
-                <th onclick="sortFilms('country')">Country</th>
+                <th onclick="setSortKey('title')">Title</th>
+                <th onclick="setSortKey('directors')">Director</th>
+                <th onclick="setSortKey('year')">Year</th>
+                <th onclick="setSortKey('revenue')">Revenue</th>
+                <th onclick="setSortKey('country')">Country</th>
             </tr>
         </thead>
         <tbody id="filmTable"></tbody>
@@ -49,16 +49,33 @@
 
     <script>
         let films = [];
+        let sortKey = '';
         let sortOrder = 1;
 
         async function fetchFilms() {
             try {
                 const response = await fetch('films.json');
                 films = await response.json();
-                displayFilms(films);
+                updateTable();
             } catch (error) {
                 console.error("Error fetching films:", error);
             }
+        }
+
+        function updateTable() {
+            let query = document.getElementById("search").value.toLowerCase();
+
+            let filteredFilms = films.filter(film => film.title.toLowerCase().includes(query));
+
+            if (sortKey) {
+                filteredFilms.sort((a, b) => {
+                    if (sortKey === 'year') return sortOrder * (a.year - b.year);
+                    if (sortKey === 'revenue') return sortOrder * (parseFloat(a.revenue.replace(/[^0-9.]/g, "")) - parseFloat(b.revenue.replace(/[^0-9.]/g, "")));
+                    return sortOrder * a[sortKey].localeCompare(b[sortKey]);
+                });
+            }
+
+            displayFilms(filteredFilms);
         }
 
         function displayFilms(filmList) {
@@ -76,20 +93,10 @@
             });
         }
 
-        function filterFilms() {
-            let query = document.getElementById("search").value.toLowerCase();
-            let filteredFilms = films.filter(film => film.title.toLowerCase().includes(query));
-            displayFilms(filteredFilms);
-        }
-
-        function sortFilms(key) {
-            sortOrder *= -1; // Toggle sort order
-            let sortedFilms = [...films].sort((a, b) => {
-                if (key === 'year') return sortOrder * (a[key] - b[key]);
-                if (key === 'revenue') return sortOrder * (parseFloat(a[key].replace(/[^0-9.]/g, "")) - parseFloat(b[key].replace(/[^0-9.]/g, "")));
-                return sortOrder * a[key].localeCompare(b[key]);
-            });
-            displayFilms(sortedFilms);
+        function setSortKey(key) {
+            sortOrder = (sortKey === key) ? -sortOrder : 1;
+            sortKey = key;
+            updateTable();
         }
 
         fetchFilms();
