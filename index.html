@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Films Visualization</title>
+    <title>Film List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            padding: 20px;
-            text-align: center;
         }
         table {
             width: 100%;
@@ -22,44 +20,80 @@
             text-align: left;
         }
         th {
-            background-color: #4CAF50;
-            color: white;
+            cursor: pointer;
+            background-color: #f2f2f2;
+        }
+        input {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <h1>Films List</h1>
+
+    <h2>Film List</h2>
+    <input type="text" id="search" placeholder="Search for a film..." onkeyup="filterFilms()">
     <table>
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Director(s)</th>
-                <th>Year</th>
-                <th>Revenue</th>
-                <th>Country</th>
+                <th onclick="sortFilms('title')">Title</th>
+                <th onclick="sortFilms('directors')">Director</th>
+                <th onclick="sortFilms('year')">Year</th>
+                <th onclick="sortFilms('revenue')">Revenue</th>
+                <th onclick="sortFilms('country')">Country</th>
             </tr>
         </thead>
-        <tbody id="filmsTableBody">
-        </tbody>
+        <tbody id="filmTable"></tbody>
     </table>
-    
+
     <script>
-        fetch('films.json')  // Make sure films.json is accessible
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.getElementById('filmsTableBody');
-                data.forEach(film => {
-                    let row = `<tr>
-                        <td>${film.title}</td>
-                        <td>${film.directors}</td>
-                        <td>${film.year}</td>
-                        <td>${film.revenue}</td>
-                        <td>${film.country}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
-                });
-            })
-            .catch(error => console.error('Error loading JSON:', error));
+        let films = [];
+        let sortOrder = 1;
+
+        async function fetchFilms() {
+            try {
+                const response = await fetch('films.json');
+                films = await response.json();
+                displayFilms(films);
+            } catch (error) {
+                console.error("Error fetching films:", error);
+            }
+        }
+
+        function displayFilms(filmList) {
+            const table = document.getElementById("filmTable");
+            table.innerHTML = "";
+            filmList.forEach(film => {
+                let row = `<tr>
+                    <td>${film.title}</td>
+                    <td>${film.directors}</td>
+                    <td>${film.year}</td>
+                    <td>${film.revenue}</td>
+                    <td>${film.country}</td>
+                </tr>`;
+                table.innerHTML += row;
+            });
+        }
+
+        function filterFilms() {
+            let query = document.getElementById("search").value.toLowerCase();
+            let filteredFilms = films.filter(film => film.title.toLowerCase().includes(query));
+            displayFilms(filteredFilms);
+        }
+
+        function sortFilms(key) {
+            sortOrder *= -1; // Toggle sort order
+            let sortedFilms = [...films].sort((a, b) => {
+                if (key === 'year') return sortOrder * (a[key] - b[key]);
+                if (key === 'revenue') return sortOrder * (parseFloat(a[key].replace(/[^0-9.]/g, "")) - parseFloat(b[key].replace(/[^0-9.]/g, "")));
+                return sortOrder * a[key].localeCompare(b[key]);
+            });
+            displayFilms(sortedFilms);
+        }
+
+        fetchFilms();
     </script>
+
 </body>
 </html>
