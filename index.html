@@ -24,6 +24,10 @@
         th {
             background-color: #4CAF50;
             color: white;
+            cursor: pointer;
+        }
+        th:hover {
+            background-color: #45a049;
         }
         input {
             padding: 8px;
@@ -53,8 +57,8 @@
             <tr>
                 <th>Title</th>
                 <th>Director(s)</th>
-                <th>Year</th>
-                <th>Revenue</th>
+                <th onclick="sortFilms('year')">Year ⬍</th>
+                <th onclick="sortFilms('revenue')">Revenue ⬍</th>
                 <th>Country</th>
             </tr>
         </thead>
@@ -64,6 +68,7 @@
     
     <script>
         let films = [];
+        let sortDirection = { year: 1, revenue: 1 };
 
         async function fetchFilms() {
             try {
@@ -95,6 +100,12 @@
             const query = document.getElementById("searchInput").value.toLowerCase();
             const filteredFilms = films.filter(film => film.title.toLowerCase().includes(query));
             displayFilms(filteredFilms);
+        }
+
+        function sortFilms(key) {
+            sortDirection[key] *= -1; // Toggle sorting direction
+            films.sort((a, b) => (a[key] - b[key]) * sortDirection[key]);
+            displayFilms(films);
         }
 
         fetchFilms();
