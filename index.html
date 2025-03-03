@@ -24,10 +24,6 @@
         th {
             background-color: #4CAF50;
             color: white;
-            cursor: pointer;
-        }
-        th:hover {
-            background-color: #45a049;
         }
         input {
             padding: 8px;
@@ -40,6 +36,7 @@
             color: white;
             border: none;
             cursor: pointer;
+            margin: 5px;
         }
         button:hover {
             background-color: #45a049;
@@ -52,13 +49,17 @@
     <input type="text" id="searchInput" placeholder="Search for a film...">
     <button onclick="searchFilms()">Search</button>
 
+    <br>
+    <button onclick="sortFilms('year')">Sort by Year 📅</button>
+    <button onclick="sortFilms('revenue')">Sort by Revenue 💰</button>
+
     <table>
         <thead>
             <tr>
                 <th>Title</th>
                 <th>Director(s)</th>
-                <th onclick="sortFilms('year')">Year ⬍</th>
-                <th onclick="sortFilms('revenue')">Revenue ⬍</th>
+                <th>Year</th>
+                <th>Revenue</th>
                 <th>Country</th>
             </tr>
         </thead>
