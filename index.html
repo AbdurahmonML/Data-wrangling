@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Film List</title>
+    <title>Films Visualization</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            padding: 20px;
+            text-align: center;
         }
         table {
             width: 100%;
@@ -20,87 +22,44 @@
             text-align: left;
         }
         th {
-            cursor: pointer;
-            background-color: #f2f2f2;
-        }
-        input {
-            padding: 8px;
-            margin-bottom: 10px;
-            width: 100%;
+            background-color: #4CAF50;
+            color: white;
         }
     </style>
 </head>
 <body>
-
-    <h2>Film List</h2>
-    <input type="text" id="search" placeholder="Search for a film..." onkeyup="updateTable()">
+    <h1>Films Liiist</h1>
     <table>
         <thead>
             <tr>
-                <th onclick="setSortKey('title')">Title</th>
-                <th onclick="setSortKey('directors')">Director</th>
-                <th onclick="setSortKey('year')">Year</th>
-                <th onclick="setSortKey('revenue')">Revenue</th>
-                <th onclick="setSortKey('country')">Country</th>
+                <th>Title</th>
+                <th>Director(s)</th>
+                <th>Year</th>
+                <th>Revenue</th>
+                <th>Country</th>
             </tr>
         </thead>
-        <tbody id="filmTable"></tbody>
+        <tbody id="filmsTableBody">
+        </tbody>
     </table>
-
+    
     <script>
-        let films = [];
-        let sortKey = '';
-        let sortOrder = 1;
-
-        async function fetchFilms() {
-            try {
-                const response = await fetch('films.json');
-                films = await response.json();
-                updateTable();
-            } catch (error) {
-                console.error("Error fetching films:", error);
-            }
-        }
-
-        function updateTable() {
-            let query = document.getElementById("search").value.toLowerCase();
-
-            let filteredFilms = films.filter(film => film.title.toLowerCase().includes(query));
-
-            if (sortKey) {
-                filteredFilms.sort((a, b) => {
-                    if (sortKey === 'year') return sortOrder * (a.year - b.year);
-                    if (sortKey === 'revenue') return sortOrder * (parseFloat(a.revenue.replace(/[^0-9.]/g, "")) - parseFloat(b.revenue.replace(/[^0-9.]/g, "")));
-                    return sortOrder * a[sortKey].localeCompare(b[sortKey]);
+        fetch('films.json')  // Make sure films.json is accessible
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('filmsTableBody');
+                data.forEach(film => {
+                    let row = `<tr>
+                        <td>${film.title}</td>
+                        <td>${film.directors}</td>
+                        <td>${film.year}</td>
+                        <td>${film.revenue}</td>
+                        <td>${film.country}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
                 });
-            }
-
-            displayFilms(filteredFilms);
-        }
-
-        function displayFilms(filmList) {
-            const table = document.getElementById("filmTable");
-            table.innerHTML = "";
-            filmList.forEach(film => {
-                let row = `<tr>
-                    <td>${film.title}</td>
-                    <td>${film.directors}</td>
-                    <td>${film.year}</td>
-                    <td>${film.revenue}</td>
-                    <td>${film.country}</td>
-                </tr>`;
-                table.innerHTML += row;
-            });
-        }
-
-        function setSortKey(key) {
-            sortOrder = (sortKey === key) ? -sortOrder : 1;
-            sortKey = key;
-            updateTable();
-        }
-
-        fetchFilms();
+            })
+            .catch(error => console.error('Error loading JSON:', error));
     </script>
-
 </body>
 </html>
