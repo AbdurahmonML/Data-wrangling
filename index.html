@@ -25,10 +25,29 @@
             background-color: #4CAF50;
             color: white;
         }
+        input {
+            padding: 8px;
+            width: 250px;
+            margin: 10px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
-    <h1>Films Liiist</h1>
+    <h1>Films List</h1>
+
+    <input type="text" id="searchInput" placeholder="Search for a film...">
+    <button onclick="searchFilms()">Search</button>
+
     <table>
         <thead>
             <tr>
@@ -44,22 +63,41 @@
     </table>
     
     <script>
-        fetch('films.json')  // Make sure films.json is accessible
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.getElementById('filmsTableBody');
-                data.forEach(film => {
-                    let row = `<tr>
-                        <td>${film.title}</td>
-                        <td>${film.directors}</td>
-                        <td>${film.year}</td>
-                        <td>${film.revenue}</td>
-                        <td>${film.country}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
-                });
-            })
-            .catch(error => console.error('Error loading JSON:', error));
+        let films = [];
+
+        async function fetchFilms() {
+            try {
+                const response = await fetch('films.json');  // Ensure films.json is accessible
+                films = await response.json();
+                displayFilms(films);
+            } catch (error) {
+                console.error('Error loading JSON:', error);
+            }
+        }
+
+        function displayFilms(filmList) {
+            const tableBody = document.getElementById('filmsTableBody');
+            tableBody.innerHTML = ""; // Clear previous data
+
+            filmList.forEach(film => {
+                let row = `<tr>
+                    <td>${film.title}</td>
+                    <td>${film.directors}</td>
+                    <td>${film.year}</td>
+                    <td>${film.revenue}</td>
+                    <td>${film.country}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function searchFilms() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const filteredFilms = films.filter(film => film.title.toLowerCase().includes(query));
+            displayFilms(filteredFilms);
+        }
+
+        fetchFilms();
     </script>
 </body>
 </html>
